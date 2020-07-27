@@ -303,19 +303,17 @@ void drawGylph(Vector pos,float rot,float size){
     //create segment
     Segment newSeg=getRandSeg();
     //test if new segment is within a boundry for the letter, if it is in bounds spawn the line
-    if(newSeg.inBounds(addFrom,start,60,60)){
-      //only add the new end point if the segment is not an ending segment
-      if(!newSeg.isEnd()){
-        allPoints.add(newSeg.getEnd(addFrom));
-      }
-      //display the new line
-      newSeg.display(addFrom,pos,rot,size);
-      drawNode(addFrom,pos,rot,size);
-      
-    }else{
-      //if it failed to spawn then try again
-      i--;
+    while(!newSeg.inBounds(addFrom,start,60,60)){
+      addFrom=allPoints.get((int)random(0,allPoints.size()));
+      newSeg=getRandSeg();
     }
+    //only add the new end point if the segment is not an ending segment
+    if(!newSeg.isEnd()){
+      allPoints.add(newSeg.getEnd(addFrom));
+    }
+    //display the new line
+    newSeg.display(addFrom,pos,rot,size);
+    drawNode(addFrom,pos,rot,size);
   }
 }
 
