@@ -60,10 +60,10 @@ public class Vector {
     return atan2(vec.y-y, vec.x-x);
   }
   public float getMag() {
-    return sqrt(sq(x)+sq(y));
+    return mag(x,y);
   }
   public float getMag(Vector vec) {
-    return sqrt(sq(vec.x-x)+sq(vec.y-y));
+    return dist(x,y,vec.x,vec.y);
   }
   public void rotVec(float rot) {
     float mag=getMag();
@@ -89,16 +89,8 @@ public class Vector {
     x=max(x,max.x);
     y=max(y,max.y);
   }
-  public boolean inRange(Vector vec,float dist){
-    float diffX=abs(vec.x-x);
-    if(diffX>dist){
-      return false;
-    }
-    float diffY=abs(vec.y-y);
-    if(diffY>dist){
-      return false;
-    }
-    return sqrt(sq(diffX)+sq(diffY))<=dist;
+  public boolean inRange(Vector vec,float distance){
+    return dist(x,y,vec.x,vec.y)<=distance;
   }
   public void setVec(Vector vec){
     x=vec.x;
