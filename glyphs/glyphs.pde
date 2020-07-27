@@ -320,7 +320,11 @@ void drawGylph(Vector pos,float rot,float size){
 //get a random segment
 Segment getRandSeg(){
   int type=randomType();
-  float rot=getRandRot(type);
+  int divisions = 6; 
+  if (type==0) {
+    divisions = 2;
+  }
+  float rot=getRandRot(divisions);
   return new Segment(type,rot);
 }
 
@@ -364,18 +368,10 @@ int randomType(){
 }
 
 //get a random rotation for a given segment type
-float getRandRot(int type){
+float getRandRot(int divisions){
   ArrayList<Float> opts=new ArrayList<Float>();
-  if(type==0){
-    for(int i=0;i<6;i++){
-      if(i%3==0){
-        opts.add(i*TWO_PI/6);
-      }
-    }
-  }else{
-    for(int i=0;i<6;i++){
-      opts.add(i*TWO_PI/6);
-    }
+  for(int i=0;i<divisions;i++){
+    opts.add(i*TWO_PI/divisions);
   }
   
   return opts.get((int)random(0,opts.size()))+PI/2;
