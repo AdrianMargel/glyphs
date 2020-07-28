@@ -16,15 +16,6 @@ public class Vector {
     this.x=x;
     this.y=y;
   }
-  public Vector(float a, float b,boolean angleInit) {
-    if(angleInit){
-      this.x=cos(a)*b;
-      this.y=sin(a)*b;
-    }else{
-      this.x=a;
-      this.y=b;
-    }
-  }
   public Vector(Vector vec) {
     this.x=vec.x;
     this.y=vec.y;
@@ -83,6 +74,10 @@ public class Vector {
   }
 }
 
+public Vector vectorRadial(float a, float b) {
+  return new Vector(cos(a)*b,sin(a)*b);
+}
+
 //generally this will just be a line
 class Segment{
   int type;
@@ -106,42 +101,42 @@ class Segment{
     if(type==2){
       float spin=TWO_PI/6;
       float rad=microD;
-      Vector pivot=new Vector(rot+PI/2,rad,true);
+      Vector pivot= vectorRadial(rot+PI/2,rad);
       pivot.addVec(start);
       arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot-PI/2,rot-PI/2+spin);
       end.rotVec(TWO_PI/6,pivot);  
     }else if(type==3){
       float spin=TWO_PI/6;
       float rad=microD;
-      Vector pivot=new Vector(rot-PI/2,rad,true);
+      Vector pivot= vectorRadial(rot-PI/2,rad);
       pivot.addVec(start);
       arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot+PI/2-spin,rot+PI/2);
       end.rotVec(TWO_PI/6,pivot);  
     }else if(type==4){
       float spin=TWO_PI/3;
       float rad=microD;
-      Vector pivot=new Vector(rot+PI/2,rad,true);
+      Vector pivot= vectorRadial(rot+PI/2,rad);
       pivot.addVec(start);
       arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot-PI/2,rot-PI/2+spin);
       end.rotVec(TWO_PI/6,pivot);  
     }else if(type==5){
       float spin=TWO_PI/3;
       float rad=microD;
-      Vector pivot=new Vector(rot-PI/2,rad,true);
+      Vector pivot= vectorRadial(rot-PI/2,rad);
       pivot.addVec(start);
       arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot+PI/2-spin,rot+PI/2);
       end.rotVec(TWO_PI/6,pivot);  
     }else if(type==6){
       float spin=TWO_PI/2;
       float rad=microD;
-      Vector pivot=new Vector(rot+PI/2,rad,true);
+      Vector pivot= vectorRadial(rot+PI/2,rad);
       pivot.addVec(start);
       arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot-PI/2,rot-PI/2+spin);
       end.rotVec(TWO_PI/6,pivot);  
     }else if(type==7){
       float spin=TWO_PI/2;
       float rad=microD;
-      Vector pivot=new Vector(rot-PI/2,rad,true);
+      Vector pivot= vectorRadial(rot-PI/2,rad);
       pivot.addVec(start);
       arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot+PI/2-spin,rot+PI/2);
       end.rotVec(TWO_PI/6,pivot);  
@@ -159,18 +154,18 @@ class Segment{
     float shortD=100*2/3f;
     float microD=100*1/3f;
     if(type==0){
-      Vector end=new Vector(rot,bigD,true);
+      Vector end= vectorRadial(rot,bigD);
       end.addVec(start);
       return end;
     }
     if(type==1){
-      Vector end=new Vector(rot,shortD,true);
+      Vector end= vectorRadial(rot,shortD);
       end.addVec(start);
       return end;
     }
     if(type==2){
       float spin=TWO_PI/6;
-      Vector pivot=new Vector(rot+PI/2,microD,true);
+      Vector pivot= vectorRadial(rot+PI/2,microD);
       pivot.addVec(start);
       Vector end=new Vector(start);
       end.rotVec(spin,pivot);
@@ -178,7 +173,7 @@ class Segment{
     }
     if(type==3){
       float spin=TWO_PI/6;
-      Vector pivot=new Vector(rot-PI/2,microD,true);
+      Vector pivot= vectorRadial(rot-PI/2,microD);
       pivot.addVec(start);
       Vector end=new Vector(start);
       end.rotVec(-spin,pivot);
@@ -186,7 +181,7 @@ class Segment{
     }
     if(type==4){
       float spin=TWO_PI/3;
-      Vector pivot=new Vector(rot+PI/2,microD,true);
+      Vector pivot= vectorRadial(rot+PI/2,microD);
       pivot.addVec(start);
       Vector end=new Vector(start);
       end.rotVec(spin,pivot);
@@ -194,7 +189,7 @@ class Segment{
     }
     if(type==5){
       float spin=TWO_PI/3;
-      Vector pivot=new Vector(rot-PI/2,microD,true);
+      Vector pivot= vectorRadial(rot-PI/2,microD);
       pivot.addVec(start);
       Vector end=new Vector(start);
       end.rotVec(-spin,pivot);
@@ -202,7 +197,7 @@ class Segment{
     }
     if(type==6){
       float spin=TWO_PI/2;
-      Vector pivot=new Vector(rot+PI/2,microD,true);
+      Vector pivot= vectorRadial(rot+PI/2,microD);
       pivot.addVec(start);
       Vector end=new Vector(start);
       end.rotVec(spin,pivot);
@@ -210,14 +205,14 @@ class Segment{
     }
     if(type==7){
       float spin=TWO_PI/2;
-      Vector pivot=new Vector(rot-PI/2,microD,true);
+      Vector pivot= vectorRadial(rot-PI/2,microD);
       pivot.addVec(start);
       Vector end=new Vector(start);
       end.rotVec(-spin,pivot);
       return end;
     }
     if(type==8){
-      Vector end=new Vector(rot,microD,true);
+      Vector end= vectorRadial(rot,microD);
       end.addVec(start);
       return end;
     }
@@ -249,7 +244,7 @@ void drawRing(Vector center,float rad,float size){
   float dist=rad;
   float totalRot=0;
   do{
-    Vector drawer=new Vector(totalRot,dist,true);
+    Vector drawer= vectorRadial(totalRot,dist);
     drawer.addVec(new Vector(center));
     drawGlyph(drawer,totalRot,size);
     //totalRot+=0.1;
