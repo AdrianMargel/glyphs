@@ -251,7 +251,7 @@ void drawRing(Vector center,float rad,float size){
   do{
     Vector drawer=new Vector(totalRot,dist,true);
     drawer.addVec(new Vector(center));
-    drawGylph(drawer,totalRot,size);
+    drawGlyph(drawer,totalRot,size);
     //totalRot+=0.1;
     
     float jump=40*size;
@@ -264,7 +264,8 @@ void drawRing(Vector center,float rad,float size){
     totalRot+=jump/dist;
   }while(totalRot<TWO_PI);
 }
-void drawGylph(Vector pos,float rot,float size){
+
+void drawGlyph(Vector pos,float rot,float size){
   
   //starting position of the glyph
   Vector start=new Vector(0,0);
