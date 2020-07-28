@@ -81,21 +81,6 @@ public class Vector {
     y=sin(ang)*mag;
     addVec(pin);
   }
-  public void minVec(Vector min){
-    x=min(x,min.x);
-    y=min(y,min.y);
-  }
-  public void maxVec(Vector max){
-    x=max(x,max.x);
-    y=max(y,max.y);
-  }
-  public boolean inRange(Vector vec,float distance){
-    return dist(x,y,vec.x,vec.y)<=distance;
-  }
-  public void setVec(Vector vec){
-    x=vec.x;
-    y=vec.y;
-  }
 }
 
 //generally this will just be a line
