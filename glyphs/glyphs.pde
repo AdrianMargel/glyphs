@@ -78,8 +78,6 @@ public Vector vectorRadial(float a, float b) {
   return new Vector(cos(a)*b,sin(a)*b);
 }
 
-
-
 //generally this will just be a line
 class Segment{
   int type;
@@ -101,57 +99,43 @@ class Segment{
     return end;
   }
   
+  void drawClockwiseArc(Vector start, float rad, float spin, float size) {
+    Vector end=getEnd(start);
+    Vector pivot= vectorRadial(rot+PI/2,rad);
+    pivot.addVec(start);
+    arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot-PI/2,rot-PI/2+spin);
+    end.rotVec(TWO_PI/6,pivot);
+  }
+
+  void drawCounterclockwiseArc(Vector start, float rad, float spin, float size) {
+    Vector end=getEnd(start);
+    Vector pivot= vectorRadial(rot-PI/2,rad);
+    pivot.addVec(start);
+    arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot+PI/2-spin,rot+PI/2);
+    end.rotVec(TWO_PI/6,pivot);
+  }
+
   void display(Vector start,Vector pos,float rot,float size){
     pushMatrix();
     translate(pos.x,pos.y);
     rotate(rot);
-    Vector end=getEnd(start);
     float microD=100*1/3f;
     
     //display based on the type
     if(type==2){
-      float spin=TWO_PI/6;
-      float rad=microD;
-      Vector pivot= vectorRadial(rot+PI/2,rad);
-      pivot.addVec(start);
-      arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot-PI/2,rot-PI/2+spin);
-      end.rotVec(TWO_PI/6,pivot);  
+      drawClockwiseArc(start, microD, TWO_PI/6, size);
     }else if(type==3){
-      float spin=TWO_PI/6;
-      float rad=microD;
-      Vector pivot= vectorRadial(rot-PI/2,rad);
-      pivot.addVec(start);
-      arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot+PI/2-spin,rot+PI/2);
-      end.rotVec(TWO_PI/6,pivot);  
+      drawCounterclockwiseArc(start, microD, TWO_PI/6, size);
     }else if(type==4){
-      float spin=TWO_PI/3;
-      float rad=microD;
-      Vector pivot= vectorRadial(rot+PI/2,rad);
-      pivot.addVec(start);
-      arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot-PI/2,rot-PI/2+spin);
-      end.rotVec(TWO_PI/6,pivot);  
+      drawClockwiseArc(start, microD, TWO_PI/3, size);
     }else if(type==5){
-      float spin=TWO_PI/3;
-      float rad=microD;
-      Vector pivot= vectorRadial(rot-PI/2,rad);
-      pivot.addVec(start);
-      arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot+PI/2-spin,rot+PI/2);
-      end.rotVec(TWO_PI/6,pivot);  
+      drawCounterclockwiseArc(start, microD, TWO_PI/3, size);
     }else if(type==6){
-      float spin=TWO_PI/2;
-      float rad=microD;
-      Vector pivot= vectorRadial(rot+PI/2,rad);
-      pivot.addVec(start);
-      arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot-PI/2,rot-PI/2+spin);
-      end.rotVec(TWO_PI/6,pivot);  
+      drawClockwiseArc(start, microD, TWO_PI/2, size);
     }else if(type==7){
-      float spin=TWO_PI/2;
-      float rad=microD;
-      Vector pivot= vectorRadial(rot-PI/2,rad);
-      pivot.addVec(start);
-      arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot+PI/2-spin,rot+PI/2);
-      end.rotVec(TWO_PI/6,pivot);  
+      drawCounterclockwiseArc(start, microD, TWO_PI/2, size);
     }else{
+      Vector end=getEnd(start);
       line(start.x*size,start.y*size,end.x*size,end.y*size);
     }
     popMatrix();
