@@ -78,6 +78,8 @@ public Vector vectorRadial(float a, float b) {
   return new Vector(cos(a)*b,sin(a)*b);
 }
 
+
+
 //generally this will just be a line
 class Segment{
   int type;
@@ -90,6 +92,15 @@ class Segment{
     Vector end=getEnd(start);
     return (abs(end.x-tar.x)<xRange&&abs(end.y-tar.y)<yRange);
   }
+  
+  Vector arcEnd(Vector start, float diameter, float spin, float rotation) {
+    Vector pivot= vectorRadial(rotation,diameter);
+    pivot.addVec(start);
+    Vector end=new Vector(start);
+    end.rotVec(-spin,pivot);
+    return end;
+  }
+  
   void display(Vector start,Vector pos,float rot,float size){
     pushMatrix();
     translate(pos.x,pos.y);
@@ -164,52 +175,22 @@ class Segment{
       return end;
     }
     if(type==2){
-      float spin=TWO_PI/6;
-      Vector pivot= vectorRadial(rot+PI/2,microD);
-      pivot.addVec(start);
-      Vector end=new Vector(start);
-      end.rotVec(spin,pivot);
-      return end;
+      return arcEnd(start, microD, TWO_PI/6, rot+PI/2);
     }
     if(type==3){
-      float spin=TWO_PI/6;
-      Vector pivot= vectorRadial(rot-PI/2,microD);
-      pivot.addVec(start);
-      Vector end=new Vector(start);
-      end.rotVec(-spin,pivot);
-      return end;
+      return arcEnd(start, microD, TWO_PI/6, rot-PI/2);
     }
     if(type==4){
-      float spin=TWO_PI/3;
-      Vector pivot= vectorRadial(rot+PI/2,microD);
-      pivot.addVec(start);
-      Vector end=new Vector(start);
-      end.rotVec(spin,pivot);
-      return end;
+      return arcEnd(start, microD, TWO_PI/3, rot+PI/2);
     }
     if(type==5){
-      float spin=TWO_PI/3;
-      Vector pivot= vectorRadial(rot-PI/2,microD);
-      pivot.addVec(start);
-      Vector end=new Vector(start);
-      end.rotVec(-spin,pivot);
-      return end;
+      return arcEnd(start, microD, TWO_PI/3, rot-PI/2);
     }
     if(type==6){
-      float spin=TWO_PI/2;
-      Vector pivot= vectorRadial(rot+PI/2,microD);
-      pivot.addVec(start);
-      Vector end=new Vector(start);
-      end.rotVec(spin,pivot);
-      return end;
+      return arcEnd(start, microD, TWO_PI/2, rot+PI/2);
     }
     if(type==7){
-      float spin=TWO_PI/2;
-      Vector pivot= vectorRadial(rot-PI/2,microD);
-      pivot.addVec(start);
-      Vector end=new Vector(start);
-      end.rotVec(-spin,pivot);
-      return end;
+      return arcEnd(start, microD, TWO_PI/2, rot-PI/2);
     }
     if(type==8){
       Vector end= vectorRadial(rot,microD);
