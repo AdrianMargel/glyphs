@@ -16,15 +16,6 @@ public class Vector {
     this.x=x;
     this.y=y;
   }
-  public Vector(float a, float b,boolean angleInit) {
-    if(angleInit){
-      this.x=cos(a)*b;
-      this.y=sin(a)*b;
-    }else{
-      this.x=a;
-      this.y=b;
-    }
-  }
   public Vector(Vector vec) {
     this.x=vec.x;
     this.y=vec.y;
@@ -60,10 +51,10 @@ public class Vector {
     return atan2(vec.y-y, vec.x-x);
   }
   public float getMag() {
-    return sqrt(sq(x)+sq(y));
+    return mag(x,y);
   }
   public float getMag(Vector vec) {
-    return sqrt(sq(vec.x-x)+sq(vec.y-y));
+    return dist(x,y,vec.x,vec.y);
   }
   public void rotVec(float rot) {
     float mag=getMag();
@@ -81,29 +72,10 @@ public class Vector {
     y=sin(ang)*mag;
     addVec(pin);
   }
-  public void minVec(Vector min){
-    x=min(x,min.x);
-    y=min(y,min.y);
-  }
-  public void maxVec(Vector max){
-    x=max(x,max.x);
-    y=max(y,max.y);
-  }
-  public boolean inRange(Vector vec,float dist){
-    float diffX=abs(vec.x-x);
-    if(diffX>dist){
-      return false;
-    }
-    float diffY=abs(vec.y-y);
-    if(diffY>dist){
-      return false;
-    }
-    return sqrt(sq(diffX)+sq(diffY))<=dist;
-  }
-  public void setVec(Vector vec){
-    x=vec.x;
-    y=vec.y;
-  }
+}
+
+public Vector vectorRadial(float a, float b) {
+  return new Vector(cos(a)*b,sin(a)*b);
 }
 
 //generally this will just be a line
@@ -118,57 +90,52 @@ class Segment{
     Vector end=getEnd(start);
     return (abs(end.x-tar.x)<xRange&&abs(end.y-tar.y)<yRange);
   }
+  
+  Vector arcEnd(Vector start, float diameter, float spin, float rotation) {
+    Vector pivot= vectorRadial(rotation,diameter);
+    pivot.addVec(start);
+    Vector end=new Vector(start);
+    end.rotVec(-spin,pivot);
+    return end;
+  }
+  
+  void drawClockwiseArc(Vector start, float rad, float spin, float size) {
+    Vector end=getEnd(start);
+    Vector pivot= vectorRadial(rot+PI/2,rad);
+    pivot.addVec(start);
+    arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot-PI/2,rot-PI/2+spin);
+    end.rotVec(TWO_PI/6,pivot);
+  }
+
+  void drawCounterclockwiseArc(Vector start, float rad, float spin, float size) {
+    Vector end=getEnd(start);
+    Vector pivot= vectorRadial(rot-PI/2,rad);
+    pivot.addVec(start);
+    arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot+PI/2-spin,rot+PI/2);
+    end.rotVec(TWO_PI/6,pivot);
+  }
+
   void display(Vector start,Vector pos,float rot,float size){
     pushMatrix();
     translate(pos.x,pos.y);
     rotate(rot);
-    Vector end=getEnd(start);
     float microD=100*1/3f;
     
     //display based on the type
     if(type==2){
-      float spin=TWO_PI/6;
-      float rad=microD;
-      Vector pivot=new Vector(rot+PI/2,rad,true);
-      pivot.addVec(start);
-      arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot-PI/2,rot-PI/2+spin);
-      end.rotVec(TWO_PI/6,pivot);  
+      drawClockwiseArc(start, microD, TWO_PI/6, size);
     }else if(type==3){
-      float spin=TWO_PI/6;
-      float rad=microD;
-      Vector pivot=new Vector(rot-PI/2,rad,true);
-      pivot.addVec(start);
-      arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot+PI/2-spin,rot+PI/2);
-      end.rotVec(TWO_PI/6,pivot);  
+      drawCounterclockwiseArc(start, microD, TWO_PI/6, size);
     }else if(type==4){
-      float spin=TWO_PI/3;
-      float rad=microD;
-      Vector pivot=new Vector(rot+PI/2,rad,true);
-      pivot.addVec(start);
-      arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot-PI/2,rot-PI/2+spin);
-      end.rotVec(TWO_PI/6,pivot);  
+      drawClockwiseArc(start, microD, TWO_PI/3, size);
     }else if(type==5){
-      float spin=TWO_PI/3;
-      float rad=microD;
-      Vector pivot=new Vector(rot-PI/2,rad,true);
-      pivot.addVec(start);
-      arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot+PI/2-spin,rot+PI/2);
-      end.rotVec(TWO_PI/6,pivot);  
+      drawCounterclockwiseArc(start, microD, TWO_PI/3, size);
     }else if(type==6){
-      float spin=TWO_PI/2;
-      float rad=microD;
-      Vector pivot=new Vector(rot+PI/2,rad,true);
-      pivot.addVec(start);
-      arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot-PI/2,rot-PI/2+spin);
-      end.rotVec(TWO_PI/6,pivot);  
+      drawClockwiseArc(start, microD, TWO_PI/2, size);
     }else if(type==7){
-      float spin=TWO_PI/2;
-      float rad=microD;
-      Vector pivot=new Vector(rot-PI/2,rad,true);
-      pivot.addVec(start);
-      arc(pivot.x*size,pivot.y*size,rad*2*size,rad*2*size,rot+PI/2-spin,rot+PI/2);
-      end.rotVec(TWO_PI/6,pivot);  
+      drawCounterclockwiseArc(start, microD, TWO_PI/2, size);
     }else{
+      Vector end=getEnd(start);
       line(start.x*size,start.y*size,end.x*size,end.y*size);
     }
     popMatrix();
@@ -182,65 +149,35 @@ class Segment{
     float shortD=100*2/3f;
     float microD=100*1/3f;
     if(type==0){
-      Vector end=new Vector(rot,bigD,true);
+      Vector end= vectorRadial(rot,bigD);
       end.addVec(start);
       return end;
     }
     if(type==1){
-      Vector end=new Vector(rot,shortD,true);
+      Vector end= vectorRadial(rot,shortD);
       end.addVec(start);
       return end;
     }
     if(type==2){
-      float spin=TWO_PI/6;
-      Vector pivot=new Vector(rot+PI/2,microD,true);
-      pivot.addVec(start);
-      Vector end=new Vector(start);
-      end.rotVec(spin,pivot);
-      return end;
+      return arcEnd(start, microD, TWO_PI/6, rot+PI/2);
     }
     if(type==3){
-      float spin=TWO_PI/6;
-      Vector pivot=new Vector(rot-PI/2,microD,true);
-      pivot.addVec(start);
-      Vector end=new Vector(start);
-      end.rotVec(-spin,pivot);
-      return end;
+      return arcEnd(start, microD, TWO_PI/6, rot-PI/2);
     }
     if(type==4){
-      float spin=TWO_PI/3;
-      Vector pivot=new Vector(rot+PI/2,microD,true);
-      pivot.addVec(start);
-      Vector end=new Vector(start);
-      end.rotVec(spin,pivot);
-      return end;
+      return arcEnd(start, microD, TWO_PI/3, rot+PI/2);
     }
     if(type==5){
-      float spin=TWO_PI/3;
-      Vector pivot=new Vector(rot-PI/2,microD,true);
-      pivot.addVec(start);
-      Vector end=new Vector(start);
-      end.rotVec(-spin,pivot);
-      return end;
+      return arcEnd(start, microD, TWO_PI/3, rot-PI/2);
     }
     if(type==6){
-      float spin=TWO_PI/2;
-      Vector pivot=new Vector(rot+PI/2,microD,true);
-      pivot.addVec(start);
-      Vector end=new Vector(start);
-      end.rotVec(spin,pivot);
-      return end;
+      return arcEnd(start, microD, TWO_PI/2, rot+PI/2);
     }
     if(type==7){
-      float spin=TWO_PI/2;
-      Vector pivot=new Vector(rot-PI/2,microD,true);
-      pivot.addVec(start);
-      Vector end=new Vector(start);
-      end.rotVec(-spin,pivot);
-      return end;
+      return arcEnd(start, microD, TWO_PI/2, rot-PI/2);
     }
     if(type==8){
-      Vector end=new Vector(rot,microD,true);
+      Vector end= vectorRadial(rot,microD);
       end.addVec(start);
       return end;
     }
@@ -272,9 +209,9 @@ void drawRing(Vector center,float rad,float size){
   float dist=rad;
   float totalRot=0;
   do{
-    Vector drawer=new Vector(totalRot,dist,true);
+    Vector drawer= vectorRadial(totalRot,dist);
     drawer.addVec(new Vector(center));
-    drawGylph(drawer,totalRot,size);
+    drawGlyph(drawer,totalRot,size);
     //totalRot+=0.1;
     
     float jump=40*size;
@@ -287,7 +224,8 @@ void drawRing(Vector center,float rad,float size){
     totalRot+=jump/dist;
   }while(totalRot<TWO_PI);
 }
-void drawGylph(Vector pos,float rot,float size){
+
+void drawGlyph(Vector pos,float rot,float size){
   
   //starting position of the glyph
   Vector start=new Vector(0,0);
@@ -303,26 +241,28 @@ void drawGylph(Vector pos,float rot,float size){
     //create segment
     Segment newSeg=getRandSeg();
     //test if new segment is within a boundry for the letter, if it is in bounds spawn the line
-    if(newSeg.inBounds(addFrom,start,60,60)){
-      //only add the new end point if the segment is not an ending segment
-      if(!newSeg.isEnd()){
-        allPoints.add(newSeg.getEnd(addFrom));
-      }
-      //display the new line
-      newSeg.display(addFrom,pos,rot,size);
-      drawNode(addFrom,pos,rot,size);
-      
-    }else{
-      //if it failed to spawn then try again
-      i--;
+    while(!newSeg.inBounds(addFrom,start,60,60)){
+      addFrom=allPoints.get((int)random(0,allPoints.size()));
+      newSeg=getRandSeg();
     }
+    //only add the new end point if the segment is not an ending segment
+    if(!newSeg.isEnd()){
+      allPoints.add(newSeg.getEnd(addFrom));
+    }
+    //display the new line
+    newSeg.display(addFrom,pos,rot,size);
+    drawNode(addFrom,pos,rot,size);
   }
 }
 
 //get a random segment
 Segment getRandSeg(){
   int type=randomType();
-  float rot=getRandRot(type);
+  int divisions = 6; 
+  if (type==0) {
+    divisions = 2;
+  }
+  float rot=getRandRot(divisions);
   return new Segment(type,rot);
 }
 
@@ -366,18 +306,10 @@ int randomType(){
 }
 
 //get a random rotation for a given segment type
-float getRandRot(int type){
+float getRandRot(int divisions){
   ArrayList<Float> opts=new ArrayList<Float>();
-  if(type==0){
-    for(int i=0;i<6;i++){
-      if(i%3==0){
-        opts.add(i*TWO_PI/6);
-      }
-    }
-  }else{
-    for(int i=0;i<6;i++){
-      opts.add(i*TWO_PI/6);
-    }
+  for(int i=0;i<divisions;i++){
+    opts.add(i*TWO_PI/divisions);
   }
   
   return opts.get((int)random(0,opts.size()))+PI/2;
